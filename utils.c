@@ -7,8 +7,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-extern UserNode* uptr;
-
 UserNode* CreateUserNode(User NewUser) {
     UserNode* nptr;
     nptr = (UserNode*)malloc(sizeof(UserNode));
@@ -37,7 +35,7 @@ status_code InsertUserAfter(UserNode* prev, User NewUser) {
     return sc;
 }
 
-status_code AddUser(User NewUser) {
+status_code AddUser(User NewUser, int FamilyID) {
     extern UserNode* uptr;
     status_code sc = SUCCESS;
 
@@ -67,6 +65,7 @@ status_code AddUser(User NewUser) {
         /* insert into User List */
         sc = InsertUserAfter(prev, NewUser);
         /* update family list */
+        sc = InsertUserToFamily(NewUser, FamilyID);
 
     }
     else {
@@ -75,6 +74,173 @@ status_code AddUser(User NewUser) {
     return sc;
 }
 
+void FamilyNameGenerator(User NewUser, char* s) {
+    int i = 0;
+    while( (NewUser.user_name)[i] != '\0' ) {
+        s[i] = (NewUser.user_name)[i];
+        i = i + 1;
+    }
+    char suffix[] = "'s family\0";
+    int j = 0;
+    while( suffix[j] != '\0' ) {
+        s[i] = suffix[j];
+        i = i + 1;
+        j = j + 1;
+    }
+    s[i] = '\0';
+}
+
+// to be written
+float GetMonthlyUserExpense(User user, int month) {
+    float ret_val = 0;
+    if( (1 <= month) && (month <= 12) ) {
+    }
+    else {
+    }
+    return ret_val;
+}
+        
+FamilyNode* CreateFamilyNode(User NewUser, int FamilyID) {
+    extern FamilyNode* fptr;
+    FamilyNode* nfptr = (FamilyNode*)malloc(sizeof(FamilyNode));
+
+    if( FamilyID == 0 ) { // Traverses family list for LastFamilyID to generate unique family_id 
+        FamilyNode* ptr = fptr; int LastFamilyID = 0;
+        while( ptr != NULL ) {
+            LastFamilyID = (ptr->family).family_id;
+            ptr = ptr->next;
+        }
+        FamilyID = LastFamilyID + 1;
+    }
+
+    if( nfptr != NULL ) { // constructs a new FamilyNode
+        (nfptr->family).family_id = FamilyID;
+        char s[NAME_SIZE];
+        FamilyNameGenerator(NewUser, s);
+        strcpy((nfptr->family).family_name, s);
+        (nfptr->family).members[0] = NewUser.user_id;
+        for(int i = 1; i < 4; i++ ) {
+            (nfptr->family).members[i] = 0;
+        }
+        (nfptr->family).total_family_income = NewUser.income;
+        for(int i = 0; i < 12; i++ ) {
+            (nfptr->family).monthly_family_expense[i] = GetMonthlyUserExpense(NewUser, i+1);
+        }
+        
+        nfptr->next = NULL; 
+    }
+    return nfptr;
+}
+
+        
+status_code InsertUserToFamily(User NewUser, int FamilyID) {
+    extern FamilyNode* fptr; status_code sc = SUCCESS;
+
+    if( FamilyID == 0 ) { // New family to be created
+        FamilyNode* nfptr = fptr, *fprev = NULL;
+
+        // traversing to find last position
+        while( nfptr != NULL ) {
+            fprev = nfptr;
+            nfptr = nfptr->next;
+        }
+        if( fprev == NULL ) { // Family list is empty, fptr to be updated
+            nfptr = CreateFamilyNode(NewUser, FamilyID);
+            if( nfptr == NULL ) sc = FAILURE;
+            else {
+                fptr = nfptr;
+            }
+        }
+        else { // fprev != NULL
+            nfptr = CreateFamilyNode(NewUser, FamilyID);
+            if( nfptr == NULL ) sc = FAILURE;
+            fprev->next = nfptr;
+        }
+    }
+    else { // FamilyID != 0
+        // searching 
+        FamilyNode* ptr = fptr, *prev = NULL;
+        Boolean done = FALSE;
+        while( (ptr != NULL) && !done ) {
+            if( (ptr->family).family_id <= FamilyID ) {
+                prev = ptr;
+                ptr = ptr->next;
+            }
+            else { // (ptr->family).family_id > FamilyID
+                done = TRUE;
+            }
+        }
+        Boolean found = FALSE;
+        if( prev == NULL ) {
+            found = FALSE;
+        }
+        else if( (prev->family).family_id == FamilyID ) {
+            found = TRUE;
+        }
+
+        if( found ) { 
+            int i = 0;
+            while( (prev->family).members[i] != 0 && (i < 4)) i = i + 1;
+            if( i >= 4 ) { // family full - Create new Family
+                InsertUserToFamily(NewUser, 0);
+            }
+            else { // i < 4 hence update family
+                (prev->family).members[i] = NewUser.user_id;
+                (prev->family).total_family_income += NewUser.income;
+                for( int j = 0; j < 12; j++ ) {
+                    (prev->family).monthly_family_expense[j] += GetMonthlyUserExpense(NewUser, j);
+                }
+            }
+
+        }
+        else { // family with given FamilyID not found - Create new Family
+            FamilyNode* nfptr = CreateFamilyNode(NewUser, FamilyID);
+
+            if( nfptr == NULL ) sc = FAILURE;
+            else { // nfptr != NULL
+                if( prev != NULL ) {
+                    prev->next = nfptr;
+                    nfptr->next = ptr;
+                }
+                else { // prev == NULL ie New node is to be added at first position - hence update fptr
+                    nfptr->next = fptr;
+                    fptr = nfptr;
+                }
+            }
+
+        }
+
+    }
+    return sc;
+}
+
+void PrintFamilyList() {
+    extern FamilyNode* fptr;
+    FamilyNode* nfptr = fptr; Family family;
+    printf("Family list:\n");
+    int i = 0;
+    while( nfptr != NULL ) {
+        family = nfptr->family;
+        printf("Family at position %d:\n"
+            "\tFamilyID: %d\n"
+            "\tFamily Name: %s\n"
+            "\tMembers:\n"
+                "\t\tUserID: %d\n"
+                "\t\tUserID: %d\n"
+                "\t\tUserID: %d\n"
+                "\t\tUserID: %d\n"
+            "\tTotal Family Income: %f\n"
+            "\tTotal Monthly Expense: \n", i, family.family_id, family.family_name, 
+            family.members[0], family.members[1], family.members[2], family.members[3], 
+            family.total_family_income
+        );
+        nfptr = nfptr->next;
+        i = i + 1;
+    }
+}
+
+
+
 void PrintUserList() {
     extern UserNode* uptr;
     UserNode* nuptr = uptr; User user;
@@ -82,10 +248,22 @@ void PrintUserList() {
     int i = 0;
     while( nuptr != NULL ) {
         user = nuptr->user;
-        printf("User position at position %d:\n\tUserID: %d\n\tUser Name: %s\n\tIncome: %f\n", i, user.user_id, user.user_name, user.income);
+        printf("User at position %d:\n"
+            "\tUserID: %d\n"
+            "\tUser Name: %s\n"
+            "\tIncome: %f\n", i, user.user_id, user.user_name, user.income);
         nuptr = nuptr->next; i = i + 1;
     }
 }
+void PrintStatus(const char* opcode, status_code sc) {
+    if( sc == SUCCESS ) {
+        printf("Operation: %s successfull\n", opcode);
+    }
+    else {
+        printf("Operatin: %s failed\n", opcode);
+    }
+}
+
 status_code ReadUserData() {
     extern UserNode* uptr;
     status_code sc = SUCCESS;
@@ -108,7 +286,7 @@ status_code ReadUserData() {
             NewUser.income = string_to_float(Income);
             FamilyID = string_to_int(FamilyIDstr);
 
-            sc = AddUser(NewUser);
+            sc = AddUser(NewUser, FamilyID);
         }
     }
     return sc;

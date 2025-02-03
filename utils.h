@@ -61,12 +61,31 @@ extern UserNode* uptr;
 extern FamilyNode* fptr;
 extern ExpenseNode* eptr;
 
-// function declarations
-status_code InsertUserAfter(UserNode* prev, User NewUser);
-status_code AddUser(User NewUser);
-void PrintUserList();
-status_code ReadUserData();
-int string_to_int(char s[]);
-float string_to_float(char s[]);
+// --------function declarations--------
+    // micro utilities:
+    int string_to_int(char s[]);
+    float string_to_float(char s[]);
+    void FamilyNameGenerator(User NewUser, char* s);
+
+    // display:
+    void PrintUserList();
+    void PrintStatus(const char* opcode, status_code sc);
+    void PrintFamilyList();
+
+    // helper functions
+    float GetMonthlyUserExpense(User user, int month);
+
+    // ----core functionalities----
+        // Creation
+        UserNode* CreateUserNode(User NewUser);
+        FamilyNode* CreateFamilyNode(User NewUser, int FamilyID);
+
+        // Insertion
+        status_code InsertUserAfter(UserNode* prev, User NewUser);
+        status_code AddUser(User NewUser, int FamilyID);
+        status_code ReadUserData();
+        status_code InsertUserToFamily(User NewUser, int FamilyID);
+
+
 
 #endif
