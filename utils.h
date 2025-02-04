@@ -66,14 +66,21 @@ extern ExpenseNode* eptr;
     int string_to_int(char s[]);
     float string_to_float(char s[]);
     void FamilyNameGenerator(User NewUser, char* s);
+    Expense MakeExpense(int exp_id, int user_id, const char* exp_cat, float exp_amt, const char* exp_date);
 
     // display:
     void PrintUserList();
     void PrintStatus(const char* opcode, status_code sc);
     void PrintFamilyList();
+    void PrintExpenseList();
 
     // helper functions
-    float GetMonthlyUserExpense(User user, int month);
+    float GetMonthlyUserExpense(int UserID, int month);
+    int CompareExpenses(Expense e1, Expense e2);
+
+    // Searching:
+    Boolean UserInFamily(Family family, int UserID);
+    FamilyNode* FamilyOfUser(int UserID);
 
     // ----core functionalities----
         // Creation
@@ -85,6 +92,8 @@ extern ExpenseNode* eptr;
         status_code AddUser(User NewUser, int FamilyID);
         status_code ReadUserData();
         status_code InsertUserToFamily(User NewUser, int FamilyID);
+        status_code AddExpense(Expense NewExpense);
+        status_code ReadExpenseData();
 
 
 
