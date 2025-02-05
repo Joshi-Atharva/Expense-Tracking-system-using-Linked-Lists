@@ -9,10 +9,14 @@
 
 // helper functions
 // to be written
-float GetMonthlyUserExpense(int UserID, int month) {
+float GetMonthlyUserExpense(int UserID, int month, float ExpenseByMonth[12]) {
     float ret_val = 0;
     extern ExpenseNode* elptr;
-    ExpenseNode* eptr = elptr; Boolean done = FALSE; Boolean found = FALSE;
+    ExpenseNode* eptr = elptr; Boolean done = FALSE; Boolean found = FALSE; int curr_month;
+
+    // initialising array of monthwise expenses
+    for(int i = 0; i<12; i++) ExpenseByMonth[i] = 0;
+
     while( eptr != NULL && !done ) {
         if( (eptr->expense).user_id == UserID ) {
             found = TRUE;
@@ -34,9 +38,11 @@ float GetMonthlyUserExpense(int UserID, int month) {
             else {
                 char month_str[3];
                 for(int i = 0; i < 2; i++) month_str[i] = (eptr->expense).date_of_expense[3+i];
-                if( string_to_int(month_str) == month ) {
+                curr_month = string_to_int(month_str);
+                if( curr_month == month ) {
                     ret_val = ret_val + (eptr->expense).expense_amount;
                 }
+                ExpenseByMonth[curr_month-1] += (eptr->expense).expense_amount;
                 eptr = eptr->next;
             }
         }
@@ -68,18 +74,16 @@ int CompareExpenses(Expense e1, Expense e2) {
 
 // display:
 void PrintTotalMonthlyFamilyExpense(Family family) {
-    int month = 1; float sum = 0;
+    int month = 1; float sum = 0; float ExpenseByMonth[12];
     while( month <= 12 ) {
         sum = 0;
         for( int i = 0; i < 4; i++ ) {
-            sum += GetMonthlyUserExpense(family.members[i], month);
+            sum += GetMonthlyUserExpense(family.members[i], month, ExpenseByMonth);
         }
         printf("\t\tMonth %d: %f\n", month, sum);
         month = month + 1;
     }
 }
-
-
 void PrintFamilyList() {
     extern FamilyNode* flptr;
     FamilyNode* fnptr = flptr; Family family; float monthly_family_expense;
@@ -135,8 +139,11 @@ void PrintExpenseList() {
         eptr = eptr->next; i = i + 1;
     }
 }
-        
-
+void PrintAllLists() {
+    printf("Printing User list:\n"); PrintUserList();
+    printf("Printing Expense list:\n"); PrintExpenseList();
+    printf("Printing Family list:\n"); PrintFamilyList();
+}
 void PrintStatus(const char* opcode, status_code sc) {
     if( sc == SUCCESS ) {
         printf("Operation: %s successfull\n", opcode);
@@ -145,7 +152,83 @@ void PrintStatus(const char* opcode, status_code sc) {
         printf("Operatin: %s failed\n", opcode);
     }
 }
+void FPrintAllLists() {
+    extern UserNode* ulptr;
+    UserNode* unptr = ulptr; User user;
+    FILE* file_ptr = fopen("Output.txt", "w");
+    if( file_ptr == NULL ) {
+        printf("Error: could not open file\n");
+    }
+    else { /* file open */
+        fprintf(file_ptr, "User List:\n");
+        int i = 0;
+        while( unptr != NULL ) {
+            user = unptr->user;
+            fprintf(file_ptr,
+                "User at position %d:\n"
+                    "\tUserID: %d\n"
+                    "\tUser Name: %s\n"
+                    "\tIncome: %f\n", i, user.user_id, user.user_name, user.income
+            );
+            unptr = unptr->next; i = i + 1;
+        }
+        extern ExpenseNode* elptr;
+        ExpenseNode* eptr = elptr; Expense expense; i = 0;
+        fprintf(file_ptr, "\nExpense List:\n");
+        while( eptr != NULL ) {
+            expense = eptr->expense;
+            fprintf(file_ptr, "Expense at position %d:\n"
+                "\tExpense ID: %d\n"
+                "\tUser ID: %d\n"
+                "\tExpense Category: %s\n"
+                "\tExpense amount: %f\n"
+                "\tDate of expense: %s\n", i, 
+                expense.expense_id, expense.user_id, expense.expense_category, expense.expense_amount, expense.date_of_expense
+            );
+            eptr = eptr->next; i = i + 1;
+        }
 
+        extern FamilyNode* flptr;
+        FamilyNode* fnptr = flptr; Family family; float monthly_family_expense;
+        fprintf(file_ptr, "\nFamily list:\n");
+        i = 0;
+        while( fnptr != NULL ) {
+            family = fnptr->family;
+            fprintf(file_ptr, "Family at position %d:\n"
+                "\tFamilyID: %d\n"
+                "\tFamily Name: %s\n"
+                "\tMembers:\n"
+                    "\t\tUserID: %d\n"
+                    "\t\tUserID: %d\n"
+                    "\t\tUserID: %d\n"
+                    "\t\tUserID: %d\n"
+                "\tTotal Family Income: %f\n"
+                "\tTotal Monthly Expense:\n", i, family.family_id, family.family_name, 
+                family.members[0], family.members[1], family.members[2], family.members[3], 
+                family.total_family_income
+            );
+            fclose(file_ptr);
+            FPrintTotalMonthlyFamilyExpense(family);
+            file_ptr = fopen("output.txt", "a");
+            fnptr = fnptr->next;
+            i = i + 1;
+        }
+    }
+    fclose(file_ptr);
+}
+void FPrintTotalMonthlyFamilyExpense(Family family) {
+    int month = 1; float sum = 0; float ExpenseByMonth[12];
+    FILE* file_ptr = fopen("output.txt", "a");
+    while( month <= 12 ) {
+        sum = 0;
+        for( int i = 0; i < 4; i++ ) {
+            sum += GetMonthlyUserExpense(family.members[i], month, ExpenseByMonth);
+        }
+        fprintf(file_ptr, "\t\tMonth %d: %f\n", month, sum);
+        month = month + 1;
+    }
+    fclose(file_ptr);
+}
 // micro utilities
 int string_to_int(char s[]) {
     int i = 0;
@@ -211,7 +294,7 @@ Expense MakeExpense(int exp_id, int user_id, const char* exp_cat, float exp_amt,
 FamilyNode* CreateFamilyNode(User NewUser, int FamilyID) {
     extern FamilyNode* flptr;
     FamilyNode* fnptr = (FamilyNode*)malloc(sizeof(FamilyNode));
-
+    float ExpenseByMonth[12];
     if( FamilyID == 0 ) { // Traverses family list for LastFamilyID to generate unique family_id 
         FamilyNode* ptr = flptr; int LastFamilyID = 0;
         while( ptr != NULL ) {
@@ -231,8 +314,10 @@ FamilyNode* CreateFamilyNode(User NewUser, int FamilyID) {
             (fnptr->family).members[i] = 0;
         }
         (fnptr->family).total_family_income = NewUser.income;
+
+        GetMonthlyUserExpense(NewUser.user_id, 1, ExpenseByMonth);
         for(int i = 0; i < 12; i++ ) {
-            (fnptr->family).monthly_family_expense[i] = GetMonthlyUserExpense(NewUser.user_id, i+1);
+            (fnptr->family).monthly_family_expense[i] = ExpenseByMonth[i];
         }
         
         fnptr->next = NULL; 
@@ -290,7 +375,102 @@ FamilyNode* FamilyOfUser(int UserID) {
     }
     return ret_fptr;
 }
+FamilyNode* FamilyOfUserForDeletion(int UserID, FamilyNode** fprevpptr) {
+    extern FamilyNode* flptr;
+    FamilyNode* ret_fptr;
+    FamilyNode* fptr = flptr, *fprev = NULL; Boolean found = FALSE;
+    while( fptr != NULL && !found) {
+        if( UserInFamily(fptr->family, UserID) ) {
+            found = TRUE;
+        }
+        else {
+            fprev = fptr;
+            fptr = fptr->next;
+        }
+    }
+    if( found ) {
+        ret_fptr = fptr;
+    }
+    else {
+        ret_fptr = NULL;
+    }
+    *fprevpptr = fprev;
+    return ret_fptr;
+}
+UserNode* FindUser(int UserID) {
+    extern UserNode* ulptr; UserNode* ret_uptr;
+    UserNode* uptr = ulptr, *uprev = NULL; Boolean found = FALSE, done = FALSE;
+    while( uptr != NULL && !done ) {
+        if( (uptr->user).user_id == UserID ) {
+            done = TRUE; found = TRUE;
+        }
+        else if( (uptr->user).user_id > UserID ) {
+            done = TRUE;
+        }
+        else { /* (uptr->user).user_id < UserID */
+            uprev = uptr;
+            uptr = uptr->next;
+        }
+    }
+    if( found ) {
+        ret_uptr = uptr;
+    }
+    else {
+        ret_uptr = NULL;
+    }
+    return ret_uptr;
+}
+UserNode* FindUserForDeletion(int UserID, UserNode** uprevpptr) {
+    extern UserNode* ulptr; UserNode* ret_uptr;
+    UserNode* uptr = ulptr, *uprev = NULL; Boolean found = FALSE, done = FALSE;
+    while( uptr != NULL && !done ) {
+        if( (uptr->user).user_id == UserID ) {
+            done = TRUE; found = TRUE;
+        }
+        else if( (uptr->user).user_id > UserID ) {
+            done = TRUE;
+        }
+        else { /* (uptr->user).user_id < UserID */
+            uprev = uptr;
+            uptr = uptr->next;
+        }
+    }
+    if( found ) {
+        ret_uptr = uptr;
+    }
+    else {
+        ret_uptr = NULL;
+    }
+    *uprevpptr = uprev;
+    return ret_uptr;
+}
+ExpenseNode* ExpenseOfUserForDeletion(int UserID, ExpenseNode** eprevpptr) {
+    extern ExpenseNode* elptr;
+    ExpenseNode *eptr, *eprev, *ret_eptr;
+    Boolean done = FALSE, found = FALSE;
+    eptr = elptr, eprev = NULL;
+    while( eptr != NULL && !done ) {
+        if( (eptr->expense).user_id == UserID ) {
+            done = TRUE; found = TRUE;
+        }
+        else if( (eptr->expense).user_id > UserID ) {
+            done = TRUE;
+        }
+        else { /* (eptr->expense).user_id < UserID */
+            eprev = eptr;
+            eptr = eptr->next;
+        }
+    }
 
+    if( found ) {
+        ret_eptr = eptr;
+    }
+    else {
+        ret_eptr = NULL;
+    }
+    *eprevpptr = eprev;
+    return ret_eptr;
+}
 
 // Insertion:
 status_code InsertUserAfter(UserNode* prev, User NewUser) {
@@ -357,7 +537,7 @@ status_code InsertUserToFamily(User NewUser, int FamilyID) {
         }
 
         if( found ) { 
-            int i = 0;
+            int i = 0; float ExpenseByMonth[12];
             while( (prev->family).members[i] != 0 && (i < 4)) i = i + 1;
             if( i >= 4 ) { // family full - Create new Family
                 InsertUserToFamily(NewUser, 0);
@@ -365,8 +545,9 @@ status_code InsertUserToFamily(User NewUser, int FamilyID) {
             else { // i < 4 hence update family
                 (prev->family).members[i] = NewUser.user_id;
                 (prev->family).total_family_income += NewUser.income;
+                GetMonthlyUserExpense(NewUser.user_id, 1, ExpenseByMonth);
                 for( int j = 0; j < 12; j++ ) {
-                    (prev->family).monthly_family_expense[j] += GetMonthlyUserExpense(NewUser.user_id, j);
+                    (prev->family).monthly_family_expense[j] += ExpenseByMonth[j];
                 }
             }
 
@@ -407,7 +588,7 @@ status_code AddExpense(Expense NewExpense) {
     }
 
     /* Insertion */
-    if( eprev == NULL ) { /* new node will be first node */
+    if( eprev == NULL ) { /* new node will be first node => reassign elptr */
         ExpenseNode *enptr = CreateExpenseNode(NewExpense);
         if( enptr == NULL ) sc = FAILURE;
         else {
@@ -415,7 +596,7 @@ status_code AddExpense(Expense NewExpense) {
             elptr = enptr;
         }
     }
-    else { /* eprev != NULL => either entry found or correct position of insertion after eprev */
+    else { /* eprev != NULL => either present entry or correct position of insertion(eprev) found */
         if( CompareExpenses(NewExpense, eprev->expense) == 0 ) { // expense already exists
             sc = FAILURE;
         }
@@ -442,8 +623,6 @@ status_code AddExpense(Expense NewExpense) {
     }
     return sc;
 }
-
-
 status_code ReadUserData() {
     extern UserNode* ulptr;
     status_code sc = SUCCESS;
@@ -469,6 +648,7 @@ status_code ReadUserData() {
             sc = AddUser(NewUser, FamilyID);
         }
     }
+    fclose(file_ptr);
     return sc;
 }
 status_code ReadExpenseData() {
@@ -493,6 +673,7 @@ status_code ReadExpenseData() {
             sc = AddExpense(NewExpense);
         }
     }
+    fclose(file_ptr);
     return sc;
 }
 status_code AddUser(User NewUser, int FamilyID) {
@@ -533,3 +714,158 @@ status_code AddUser(User NewUser, int FamilyID) {
     }
     return sc;
 }
+
+
+// Updation:
+status_code UpdateUser(User NewUser) {
+    status_code sc = SUCCESS;
+    int UserID = NewUser.user_id; 
+    UserNode* uptr = FindUser(UserID); FamilyNode* fptr;
+    if( uptr == NULL ) {
+        sc = FAILURE;
+    }
+    else { /* uptr != NULL */
+        strcpy((uptr->user).user_name, NewUser.user_name);
+        fptr = FamilyOfUser(UserID);
+        if( fptr != NULL ) {
+            (fptr->family).total_family_income += NewUser.income - (uptr->user).income;
+            (uptr->user).income = NewUser.income;
+        }
+        else {
+            sc = FAILURE;
+        }
+    }
+    return sc;
+}
+
+
+// Deletion
+status_code DeleteExpenseNode(ExpenseNode** epptr, ExpenseNode** eprevpptr) {
+    extern ExpenseNode* elptr;
+    status_code sc = SUCCESS;
+    ExpenseNode* eptr = *epptr, *eprev = *eprevpptr;
+    if( eptr != NULL ) {
+        if( eprev != NULL ) {
+            eprev->next = eptr->next;
+            *epptr = eprev->next;
+            *eprevpptr = eprev;
+            free(eptr); eptr = NULL;
+        }
+        else { /* eprev = NULL => eptr is elptr */
+            elptr = eptr->next;
+            *epptr = elptr;
+            *eprevpptr = NULL;
+            free(eptr); eptr = NULL;
+        }
+    }
+    else {
+        sc = FAILURE;
+    }
+    return sc;
+}
+status_code DeleteFamilyNode(FamilyNode* fptr, FamilyNode** fprevpptr) {
+    extern FamilyNode* flptr;
+    status_code sc = SUCCESS;
+    FamilyNode* fprev = *fprevpptr;
+    if( fptr != NULL ) {
+        if( fprev != NULL ) {
+            fprev->next = fptr->next;
+            *fprevpptr = fprev;
+            free(fptr); fptr = NULL;
+        }
+        else { /* fprev == NULL => reassign flptr */
+            flptr = fptr->next;
+            *fprevpptr = NULL;
+            free(fptr); fptr = NULL;
+        }
+    }
+    else {
+        sc = FAILURE;
+    }
+    return sc;
+}
+status_code DeleteUser(int UserID) {
+    status_code sc = SUCCESS; extern UserNode* ulptr;
+    UserNode* uptr, *uprev;
+    uptr = FindUserForDeletion(UserID, &uprev);
+    if( uptr == NULL ) { /* user not found */
+        sc = FAILURE;
+    }
+    else { /* uptr != NULL => user found */
+        /* update family list */
+        FamilyNode *fptr, *fprev;
+        fptr = FamilyOfUserForDeletion(UserID, &fprev);
+        float UserExpenseByMonth[12];
+        if( fptr != NULL ) {
+            // updating total family income
+            (fptr->family).total_family_income -= (uptr->user).income;
+
+            // updating monthly family expense
+            GetMonthlyUserExpense(UserID, 1, UserExpenseByMonth);
+            for( int i = 0; i < 12; i++ ) {
+                (fptr->family).monthly_family_expense[i] -= UserExpenseByMonth[i];
+            }
+
+            // updating member list
+            int i = 0; Boolean found = FALSE;
+            while( i < 4 && !found ) {
+                if( (fptr->family).members[i] == UserID ) {
+                    found = TRUE;
+                }
+                else { 
+                    i = i + 1;
+                }
+            }
+            if( !found ) {
+                sc = FAILURE;
+            }
+            else {
+                (fptr->family).members[i] = 0;
+                while( i < 3 ) {
+                    (fptr->family).members[i] = (fptr->family).members[i+1];
+                    i = i + 1;
+                }
+                (fptr->family).members[3] = 0;
+                if( (fptr->family).members[0] == 0 ) {
+                    DeleteFamilyNode(fptr, &fprev);
+                }
+            }
+        } /* end of conditional: fptr != NULL */
+        else { /* ftpr == NULL */
+            sc = FAILURE;
+        }
+        
+        /* update expense list */
+        ExpenseNode* eptr, *eprev;
+        eptr = ExpenseOfUserForDeletion(UserID, &eprev);
+        if( eptr != NULL ) {
+            Boolean done = FALSE; ExpenseNode* temp;
+            while( eptr != NULL && !done && (sc == SUCCESS) ) {    
+                if( (eptr->expense.user_id) != UserID ) {
+                    done = TRUE;
+                }
+                else {
+                    sc = DeleteExpenseNode(&eptr, &eprev); // also updates eptr and eprev to their correct next values
+                }
+            }
+        }
+        else { /* eptr == NULL */
+            sc = FAILURE;
+        }
+
+        /* update user list */
+        if( uprev == NULL ) { /* update ulptr */
+            ulptr = uptr->next;
+            free(uptr); uptr = NULL;
+        }
+        else { /* uprev != NULL */
+            uprev->next = uptr->next;
+            free(uptr); uptr = NULL;
+        }
+    } /* end of conditional: uptr != NULL */
+    return sc;
+}
+
+
+
+

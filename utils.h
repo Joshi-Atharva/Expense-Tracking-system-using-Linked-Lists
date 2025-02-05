@@ -68,24 +68,34 @@ extern ExpenseNode* eptr;
     void FamilyNameGenerator(User NewUser, char* s);
     Expense MakeExpense(int exp_id, int user_id, const char* exp_cat, float exp_amt, const char* exp_date);
 
-    // display:
+    // display functions:
     void PrintUserList();
     void PrintStatus(const char* opcode, status_code sc);
     void PrintFamilyList();
     void PrintExpenseList();
+    void PrintAllLists();
+    void PrintTotalMonthlyFamilyExpense(Family family);
+    void FPrintAllLists();
+    void FPrintTotalMonthlyFamilyExpense(Family family);
 
-    // helper functions
-    float GetMonthlyUserExpense(int UserID, int month);
+    // helper functions:
+    float GetMonthlyUserExpense(int UserID, int month, float ExpenseByMonth[12]);
     int CompareExpenses(Expense e1, Expense e2);
 
     // Searching:
-    Boolean UserInFamily(Family family, int UserID);
     FamilyNode* FamilyOfUser(int UserID);
+    FamilyNode* FamilyOfUserForDeletion(int UserID, FamilyNode** fprevpptr);
+    Boolean UserInFamily(Family family, int UserID); // trivial wrapper function
+    UserNode* FindUser(int UserID);
+    UserNode* FindUserForDeletion(int UserID, UserNode** uprevpptr);
+    ExpenseNode* ExpenseOfUser(int UserID);
+    ExpenseNode* ExpenseOfUserForDeletion(int UserID, ExpenseNode** eprevpptr);
 
     // ----core functionalities----
         // Creation
         UserNode* CreateUserNode(User NewUser);
         FamilyNode* CreateFamilyNode(User NewUser, int FamilyID);
+        ExpenseNode* CreateExpenseNode(Expense NewExpense);
 
         // Insertion
         status_code InsertUserAfter(UserNode* prev, User NewUser);
@@ -95,6 +105,12 @@ extern ExpenseNode* eptr;
         status_code AddExpense(Expense NewExpense);
         status_code ReadExpenseData();
 
+        // Updation:
+        status_code UpdateUser(User NewUser);
 
+        // Deletion:
+        status_code DeleteExpenseNode(ExpenseNode** epptr, ExpenseNode** eprevpptr);
+        status_code DeleteFamilyNode(FamilyNode* fptr, FamilyNode** fprevpptr);
+        status_code DeleteUser(int UserID);
 
 #endif
