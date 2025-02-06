@@ -6,7 +6,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
+#define NUM_MONTHS 12
+#define NUM_DAYS 10
 // helper functions
 // to be written
 float GetMonthlyUserExpense(int UserID, int month, float ExpenseByMonth[12]) {
@@ -149,7 +150,7 @@ void PrintStatus(const char* opcode, status_code sc) {
         printf("Operation: %s successfull\n", opcode);
     }
     else {
-        printf("Operatin: %s failed\n", opcode);
+        printf("Operation: %s failed\n", opcode);
     }
 }
 void FPrintAllLists() {
@@ -444,6 +445,32 @@ UserNode* FindUserForDeletion(int UserID, UserNode** uprevpptr) {
     *uprevpptr = uprev;
     return ret_uptr;
 }
+ExpenseNode* ExpenseOfUser(int UserID) {
+    extern ExpenseNode* elptr;
+    ExpenseNode *eptr, *eprev, *ret_eptr;
+    Boolean done = FALSE, found = FALSE;
+    eptr = elptr, eprev = NULL;
+    while( eptr != NULL && !done ) {
+        if( (eptr->expense).user_id == UserID ) {
+            done = TRUE; found = TRUE;
+        }
+        else if( (eptr->expense).user_id > UserID ) {
+            done = TRUE;
+        }
+        else { /* (eptr->expense).user_id < UserID */
+            eprev = eptr;
+            eptr = eptr->next;
+        }
+    }
+
+    if( found ) {
+        ret_eptr = eptr;
+    }
+    else {
+        ret_eptr = NULL;
+    }
+    return ret_eptr;
+}
 ExpenseNode* ExpenseOfUserForDeletion(int UserID, ExpenseNode** eprevpptr) {
     extern ExpenseNode* elptr;
     ExpenseNode *eptr, *eprev, *ret_eptr;
@@ -471,6 +498,53 @@ ExpenseNode* ExpenseOfUserForDeletion(int UserID, ExpenseNode** eprevpptr) {
     *eprevpptr = eprev;
     return ret_eptr;
 }
+ExpenseNode* FindExpenseForDeletion(int ExpenseID, ExpenseNode** eprevpptr) {
+    extern ExpenseNode* elptr;
+    ExpenseNode *eptr, *eprev, *ret_eptr;
+    eptr = elptr; eprev = NULL;
+    Boolean found = FALSE;
+    while( eptr != NULL && !found ) {
+        if( (eptr->expense).expense_id == ExpenseID ) {
+            found = TRUE;
+        }
+        else {
+            eprev = eptr;
+            eptr = eptr->next;
+        }
+    }
+
+    if( found ) {
+        ret_eptr = eptr;
+    }
+    else {
+        ret_eptr = NULL;
+    }
+    *eprevpptr = eprev;
+    return ret_eptr;
+}
+FamilyNode* FindFamily(int FamilyID) {
+    extern FamilyNode* flptr; 
+    FamilyNode* fptr = flptr, *ret_fptr; Boolean done = FALSE, found = FALSE;
+    while( fptr != NULL && !done ) {
+        if( (fptr->family).family_id == FamilyID ) {
+            found = TRUE; done = TRUE;
+        }
+        else if( (fptr->family).family_id > FamilyID ) {
+            done = TRUE;
+        }
+        else {
+            fptr = fptr->next;
+        }
+    }
+    if( found ) {
+        ret_fptr = fptr;
+    }
+    else {
+        ret_fptr = NULL;
+    }
+    return ret_fptr;
+}
+
 
 // Insertion:
 status_code InsertUserAfter(UserNode* prev, User NewUser) {
@@ -503,6 +577,7 @@ status_code InsertUserToFamily(User NewUser, int FamilyID) {
             fnptr = fnptr->next;
         }
         if( fprev == NULL ) { // Family list is empty, flptr to be updated
+            FamilyID = FamilyID + 1;
             fnptr = CreateFamilyNode(NewUser, FamilyID);
             if( fnptr == NULL ) sc = FAILURE;
             else {
@@ -510,6 +585,7 @@ status_code InsertUserToFamily(User NewUser, int FamilyID) {
             }
         }
         else { // fprev != NULL
+            FamilyID = fprev->family.family_id + 1; // unique family id
             fnptr = CreateFamilyNode(NewUser, FamilyID);
             if( fnptr == NULL ) sc = FAILURE;
             fprev->next = fnptr;
@@ -680,37 +756,55 @@ status_code AddUser(User NewUser, int FamilyID) {
     extern UserNode* ulptr;
     status_code sc = SUCCESS;
 
-    // searching 
-    UserNode *nptr, *prev;
-    nptr = ulptr; prev = NULL;
-    Boolean found = FALSE, done = FALSE;
-    while( (nptr != NULL) && !done ) {
-        if( (nptr->user).user_id <= NewUser.user_id ) {
+    if( NewUser.user_id == 0 ) { /* UserID not specified - traverse to the the end and make new ID */
+        UserNode* nptr, *prev;
+        nptr = ulptr, prev = NULL;
+        while( nptr != NULL ) {
             prev = nptr;
             nptr = nptr->next;
         }
-        else if( (nptr->user).user_id > NewUser.user_id ) {
-            done = TRUE;
+        if( prev == NULL ) { /* User List empty => create user with UserID 1 */
+            NewUser.user_id = 1;
         }
-    } // done searching
-    
-    // checking if user exists
-    if( prev == NULL ) {
-        found = FALSE;
-    }
-    else if( (prev->user).user_id == NewUser.user_id ) {
-        found = TRUE;
-    }
-    // if not found, insert, else raise error
-    if( !found ) {
-        /* insert into User List */
+        else {
+            NewUser.user_id = (prev->user).user_id + 1; // Generating unique user_id
+        }
+        /* Inserting into user list */
         sc = InsertUserAfter(prev, NewUser);
-        /* update family list */
-        sc = InsertUserToFamily(NewUser, FamilyID);
-
     }
     else {
-        sc = FAILURE;
+        // searching 
+        UserNode *nptr, *prev;
+        nptr = ulptr; prev = NULL;
+        Boolean found = FALSE, done = FALSE;
+        while( (nptr != NULL) && !done ) {
+            if( (nptr->user).user_id <= NewUser.user_id ) {
+                prev = nptr;
+                nptr = nptr->next;
+            }
+            else if( (nptr->user).user_id > NewUser.user_id ) {
+                done = TRUE;
+            }
+        } // done searching
+        
+        // checking if user exists
+        if( prev == NULL ) {
+            found = FALSE;
+        }
+        else if( (prev->user).user_id == NewUser.user_id ) {
+            found = TRUE;
+        }
+        // if not found, insert, else raise error
+        if( !found ) {
+            /* insert into User List */
+            sc = InsertUserAfter(prev, NewUser);
+            /* update family list */
+            sc = InsertUserToFamily(NewUser, FamilyID);
+
+        }
+        else {
+            sc = FAILURE;
+        }
     }
     return sc;
 }
@@ -865,7 +959,165 @@ status_code DeleteUser(int UserID) {
     } /* end of conditional: uptr != NULL */
     return sc;
 }
+status_code DeleteFamily(int FamilyID) {
+    status_code sc = SUCCESS;
+    FamilyNode* fptr = FindFamily(FamilyID);
+    if( fptr == NULL ) {
+        sc = FAILURE;
+    }
+    else { /* fptr != NULL */
+        int i = 0; int MembersCopy[4]; int UserID;
+        while( i < 4 ) {
+            MembersCopy[i] = fptr->family.members[i];
+            i = i + 1;
+        }
+        i = 0;
+        while( i < 4 ) {
+            UserID = MembersCopy[i];
+            DeleteUser(UserID);
+            i = i + 1;
+        }
+    }
+    return sc;
+}
+status_code DeleteExpense(int ExpenseID) {
+    status_code sc = SUCCESS; extern ExpenseNode* elptr;
+    ExpenseNode* eptr, *eprev = NULL;
+    eptr = FindExpenseForDeletion(ExpenseID, &eprev);
+    if( eptr == NULL ) { /* entry not found */
+        sc = FAILURE;
+    }
+    else { /* eptr != NULL */
+        int UserID = (eptr->expense).user_id;
+        FamilyNode* fptr = FamilyOfUser(UserID);
+        if( fptr == NULL ) sc = FAILURE;
+        else {
+            /* updating family monthly expense */
+            char month_str[3]; int month;
+            for(int i = 0; i < 2; i++) month_str[i] = (eptr->expense).date_of_expense[3+i];
+            month = string_to_int(month_str);
+            (fptr->family).monthly_family_expense[month-1] -= (eptr->expense).expense_amount;
+        }
+        
+        /* updating expense list - node deletion */
+        sc = DeleteExpenseNode(&eptr, &eprev);
+    }
+    return sc;
+}
 
+const char* MonthOfTheYear(int month) {
+    const char* ret_str;
+    const char* Months[12] = {
+            "January", "February", "March", "April",
+            "May", "June", "July", "August",
+            "September", "October", "November", "December"
+        };
+    if( 1 <= month && month <= 12 ) {
+        ret_str = Months[month-1];
+    }
+    else {
+        ret_str = "NULL";
+    }
+    return ret_str;
+}
+        
+// Getters
+float GetTotalExpense(int FamilyID) {
+    FamilyNode* fptr = FindFamily(FamilyID);
+    float total_expense = -1;
+    if( fptr == NULL ) {
+        printf("Requested family could not be found\n");
+    }
+    else {
+        total_expense = 0;
+        for(int i = 0; i < 12; i++ ) {
+            total_expense += (fptr->family).monthly_family_expense[i];
+        }
+        printf("Total family expense for the year is %f\n", total_expense);
+        float difference = (fptr->family).total_family_income - total_expense;
+        if( difference < 0 ) {
+            printf("Family expense exceeds income by %f\n", -difference);
+        }
+        else if( difference = 0 ) {
+            printf("Family expense = Family Income\n");
+        }
+        else {
+            printf("Family Income exceeds Expense by %f\n", difference);
+        }
+    }
+    return total_expense;
+}
+void GetCategoricalExpense(const char* category, int FamilyID) {
+    FamilyNode* fptr = FindFamily(FamilyID);
+    if( fptr == NULL ) { /* family not found */
+        printf("ERROR: Family not found\n");
+    }
+    else { /* fptr != NULL */
+        int UserID; ExpenseNode* eptr; 
+        float FamilyExp = 0; float UserExp[4];
+        for( int i = 0 ; i< 4; i++ ) {  
+            UserID = (fptr->family).members[i];
+            eptr = ExpenseOfUser(UserID);
+            Boolean done = FALSE;
+            UserExp[i] = 0;
+            while( eptr != NULL && !done ) {
+                if( (eptr->expense).user_id > UserID) {
+                    done = TRUE;
+                }
+                else if( (eptr->expense).user_id == UserID ) {
+                    UserExp[i] += (!strcmp(category, (eptr->expense).expense_category))*(eptr->expense).expense_amount;
+                }
+                eptr = eptr->next;
+            }
+            FamilyExp += UserExp[i];
+        }
 
+        // printing
+        printf("Family Expense for category %s: %f\n", category, FamilyExp);
+        for(int i = 0; i < 4; i++ ) {
+            if( fptr->family.members[i] != 0 ) {
+                printf("\tContribution of User: %d: %f\n", fptr->family.members[i], UserExp[i]);
+            }
+        }
+    }
+}
+void GetHighestExpenseDay(int FamilyID) {
+    extern ExpenseNode* elptr;
+    ExpenseNode* eptr; FamilyNode* fptr;
+    float calender[NUM_MONTHS][NUM_DAYS];
+    for(int i = 0; i < NUM_MONTHS; i++ ) {
+        for(int j = 0; j < NUM_DAYS; j++) {
+            calender[i][j] = 0;
+        }
+    }
+    float max = 0; int max_day = 0, max_month = 0, day, month;
+    char day_str[3], month_str[3];
+    eptr = elptr;
+    fptr = FindFamily(FamilyID);
+    if( fptr == NULL ) {
+        printf("ERROR: Family Not Found\n");
+    }
+    else {
+        Family fam; int UserID;
+        while( eptr != NULL ) {     
+            fam = fptr->family; UserID = (eptr->expense).user_id;
+            if( UserInFamily(fam, UserID) ) {
+                for(int i = 0; i < 2; i++ ) {
+                    day_str[i] = (eptr->expense).date_of_expense[i];
+                    month_str[i] = (eptr->expense).date_of_expense[3+i];
+                }
+                day_str[2] = '\0'; month_str[2] = '\0';
+                day = string_to_int(day_str); month = string_to_int(month_str);
+                calender[day-1][month-1] += (eptr->expense).expense_amount;
+                if( max < calender[day-1][month-1] ) {
+                    max = calender[day-1][month-1];
+                    max_day = day; max_month = month;
+                }
+            }
+            eptr = eptr->next;
+        }
+        printf("Highest expense by FamilyID: %d, worth: %f was done on %d %s\n", FamilyID, max, max_day, MonthOfTheYear(max_month));
+    }
+}
 
 

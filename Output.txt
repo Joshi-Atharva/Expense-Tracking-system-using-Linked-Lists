@@ -1,0 +1,521 @@
+User List:
+User at position 0:
+	UserID: 127
+	User Name: Amit
+	Income: 88000.000000
+User at position 1:
+	UserID: 152
+	User Name: Raj
+	Income: 85000.000000
+User at position 2:
+	UserID: 155
+	User Name: Rahul
+	Income: 90000.000000
+User at position 3:
+	UserID: 197
+	User Name: Manoj
+	Income: 92000.000000
+User at position 4:
+	UserID: 242
+	User Name: Rohan
+	Income: 87000.000000
+User at position 5:
+	UserID: 286
+	User Name: Varun
+	Income: 89000.000000
+User at position 6:
+	UserID: 315
+	User Name: Nikhil
+	Income: 102000.000000
+User at position 7:
+	UserID: 354
+	User Name: Sunita
+	Income: 108000.000000
+User at position 8:
+	UserID: 419
+	User Name: Meera
+	Income: 92000.000000
+User at position 9:
+	UserID: 432
+	User Name: Aditi
+	Income: 85000.000000
+User at position 10:
+	UserID: 476
+	User Name: Pratik
+	Income: 89000.000000
+User at position 11:
+	UserID: 511
+	User Name: Anjali
+	Income: 94000.000000
+User at position 12:
+	UserID: 564
+	User Name: Hiten
+	Income: 100000.000000
+User at position 13:
+	UserID: 589
+	User Name: Deepak
+	Income: 90000.000000
+User at position 14:
+	UserID: 632
+	User Name: Kiran
+	Income: 98000.000000
+User at position 15:
+	UserID: 640
+	User Name: Niyati
+	Income: 91000.000000
+User at position 16:
+	UserID: 671
+	User Name: Priya
+	Income: 100000.000000
+User at position 17:
+	UserID: 702
+	User Name: Arjun
+	Income: 93000.000000
+User at position 18:
+	UserID: 783
+	User Name: Pooja
+	Income: 96000.000000
+User at position 19:
+	UserID: 821
+	User Name: Kavita
+	Income: 115000.000000
+User at position 20:
+	UserID: 867
+	User Name: Radhika
+	Income: 107000.000000
+User at position 21:
+	UserID: 903
+	User Name: Neha
+	Income: 105000.000000
+User at position 22:
+	UserID: 913
+	User Name: Sneha
+	Income: 97000.000000
+User at position 23:
+	UserID: 918
+	User Name: Sanjay
+	Income: 110000.000000
+User at position 24:
+	UserID: 983
+	User Name: Vikram
+	Income: 95000.000000
+
+Expense List:
+Expense at position 0:
+	Expense ID: 230
+	User ID: 127
+	Expense Category: Rent
+	Expense amount: 5500.000000
+	Date of expense: 04-09-2024
+Expense at position 1:
+	Expense ID: 506
+	User ID: 127
+	Expense Category: Utility
+	Expense amount: 1450.000000
+	Date of expense: 09-09-2024
+Expense at position 2:
+	Expense ID: 472
+	User ID: 152
+	Expense Category: Utility
+	Expense amount: 1500.000000
+	Date of expense: 02-01-2024
+Expense at position 3:
+	Expense ID: 802
+	User ID: 152
+	Expense Category: Grocery
+	Expense amount: 2300.000000
+	Date of expense: 07-09-2024
+Expense at position 4:
+	Expense ID: 142
+	User ID: 155
+	Expense Category: Leisure
+	Expense amount: 3400.000000
+	Date of expense: 04-03-2024
+Expense at position 5:
+	Expense ID: 543
+	User ID: 197
+	Expense Category: Grocery
+	Expense amount: 1900.000000
+	Date of expense: 10-03-2024
+Expense at position 6:
+	Expense ID: 921
+	User ID: 197
+	Expense Category: Rent
+	Expense amount: 5300.000000
+	Date of expense: 05-09-2024
+Expense at position 7:
+	Expense ID: 287
+	User ID: 242
+	Expense Category: Rent
+	Expense amount: 4800.000000
+	Date of expense: 08-04-2024
+Expense at position 8:
+	Expense ID: 719
+	User ID: 242
+	Expense Category: Grocery
+	Expense amount: 2150.000000
+	Date of expense: 03-09-2024
+Expense at position 9:
+	Expense ID: 362
+	User ID: 286
+	Expense Category: Grocery
+	Expense amount: 1800.000000
+	Date of expense: 02-05-2024
+Expense at position 10:
+	Expense ID: 234
+	User ID: 315
+	Expense Category: Leisure
+	Expense amount: 3200.000000
+	Date of expense: 10-09-2024
+Expense at position 11:
+	Expense ID: 789
+	User ID: 315
+	Expense Category: Utility
+	Expense amount: 1200.000000
+	Date of expense: 05-10-2024
+Expense at position 12:
+	Expense ID: 145
+	User ID: 354
+	Expense Category: Grocery
+	Expense amount: 2050.000000
+	Date of expense: 07-09-2024
+Expense at position 13:
+	Expense ID: 987
+	User ID: 354
+	Expense Category: Utility
+	Expense amount: 1100.000000
+	Date of expense: 02-12-2024
+Expense at position 14:
+	Expense ID: 219
+	User ID: 419
+	Expense Category: Utility
+	Expense amount: 1600.000000
+	Date of expense: 01-09-2024
+Expense at position 15:
+	Expense ID: 478
+	User ID: 432
+	Expense Category: Stationary
+	Expense amount: 900.000000
+	Date of expense: 08-10-2024
+Expense at position 16:
+	Expense ID: 564
+	User ID: 476
+	Expense Category: Rent
+	Expense amount: 6200.000000
+	Date of expense: 04-09-2024
+Expense at position 17:
+	Expense ID: 571
+	User ID: 476
+	Expense Category: Stationary
+	Expense amount: 950.000000
+	Date of expense: 09-06-2024
+Expense at position 18:
+	Expense ID: 834
+	User ID: 511
+	Expense Category: Leisure
+	Expense amount: 3650.000000
+	Date of expense: 04-09-2024
+Expense at position 19:
+	Expense ID: 876
+	User ID: 511
+	Expense Category: Stationary
+	Expense amount: 800.000000
+	Date of expense: 09-09-2024
+Expense at position 20:
+	Expense ID: 654
+	User ID: 564
+	Expense Category: Rent
+	Expense amount: 6000.000000
+	Date of expense: 09-11-2024
+Expense at position 21:
+	Expense ID: 318
+	User ID: 589
+	Expense Category: Leisure
+	Expense amount: 3600.000000
+	Date of expense: 10-09-2024
+Expense at position 22:
+	Expense ID: 812
+	User ID: 589
+	Expense Category: Grocery
+	Expense amount: 2400.000000
+	Date of expense: 05-11-2024
+Expense at position 23:
+	Expense ID: 795
+	User ID: 632
+	Expense Category: Rent
+	Expense amount: 5800.000000
+	Date of expense: 03-07-2024
+Expense at position 24:
+	Expense ID: 341
+	User ID: 640
+	Expense Category: Grocery
+	Expense amount: 2100.000000
+	Date of expense: 06-09-2024
+Expense at position 25:
+	Expense ID: 667
+	User ID: 640
+	Expense Category: Rent
+	Expense amount: 6100.000000
+	Date of expense: 01-12-2024
+Expense at position 26:
+	Expense ID: 352
+	User ID: 671
+	Expense Category: Rent
+	Expense amount: 5000.000000
+	Date of expense: 01-09-2024
+Expense at position 27:
+	Expense ID: 473
+	User ID: 671
+	Expense Category: Stationary
+	Expense amount: 750.000000
+	Date of expense: 06-09-2024
+Expense at position 28:
+	Expense ID: 371
+	User ID: 702
+	Expense Category: Utility
+	Expense amount: 1400.000000
+	Date of expense: 06-09-2024
+Expense at position 29:
+	Expense ID: 231
+	User ID: 783
+	Expense Category: Rent
+	Expense amount: 4500.000000
+	Date of expense: 01-01-2024
+Expense at position 30:
+	Expense ID: 530
+	User ID: 783
+	Expense Category: Rent
+	Expense amount: 4700.000000
+	Date of expense: 06-07-2024
+Expense at position 31:
+	Expense ID: 478
+	User ID: 821
+	Expense Category: Utility
+	Expense amount: 1300.000000
+	Date of expense: 02-09-2024
+Expense at position 32:
+	Expense ID: 659
+	User ID: 821
+	Expense Category: Leisure
+	Expense amount: 3500.000000
+	Date of expense: 07-09-2024
+Expense at position 33:
+	Expense ID: 127
+	User ID: 867
+	Expense Category: Leisure
+	Expense amount: 3700.000000
+	Date of expense: 07-09-2024
+Expense at position 34:
+	Expense ID: 419
+	User ID: 903
+	Expense Category: Stationary
+	Expense amount: 850.000000
+	Date of expense: 05-02-2024
+Expense at position 35:
+	Expense ID: 358
+	User ID: 913
+	Expense Category: Rent
+	Expense amount: 4900.000000
+	Date of expense: 08-05-2024
+Expense at position 36:
+	Expense ID: 643
+	User ID: 913
+	Expense Category: Leisure
+	Expense amount: 3300.000000
+	Date of expense: 03-09-2024
+Expense at position 37:
+	Expense ID: 103
+	User ID: 918
+	Expense Category: Grocery
+	Expense amount: 2200.000000
+	Date of expense: 03-07-2024
+Expense at position 38:
+	Expense ID: 149
+	User ID: 918
+	Expense Category: Utility
+	Expense amount: 1250.000000
+	Date of expense: 08-06-2024
+Expense at position 39:
+	Expense ID: 948
+	User ID: 983
+	Expense Category: Grocery
+	Expense amount: 2000.000000
+	Date of expense: 10-02-2024
+
+Family list:
+Family at position 0:
+	FamilyID: 200
+	Family Name: Pratik's family
+	Members:
+		UserID: 476
+		UserID: 354
+		UserID: 702
+		UserID: 564
+	Total Family Income: 390000.000000
+	Total Monthly Expense:
+		Month 1: 0.000000
+		Month 2: 0.000000
+		Month 3: 0.000000
+		Month 4: 0.000000
+		Month 5: 0.000000
+		Month 6: 950.000000
+		Month 7: 0.000000
+		Month 8: 0.000000
+		Month 9: 9650.000000
+		Month 10: 0.000000
+		Month 11: 6000.000000
+		Month 12: 1100.000000
+Family at position 1:
+	FamilyID: 312
+	Family Name: Pooja's family
+	Members:
+		UserID: 783
+		UserID: 640
+		UserID: 821
+		UserID: 197
+	Total Family Income: 394000.000000
+	Total Monthly Expense:
+		Month 1: 4500.000000
+		Month 2: 0.000000
+		Month 3: 1900.000000
+		Month 4: 0.000000
+		Month 5: 0.000000
+		Month 6: 0.000000
+		Month 7: 4700.000000
+		Month 8: 0.000000
+		Month 9: 12200.000000
+		Month 10: 0.000000
+		Month 11: 0.000000
+		Month 12: 6100.000000
+Family at position 2:
+	FamilyID: 409
+	Family Name: Raj's family
+	Members:
+		UserID: 152
+		UserID: 242
+		UserID: 913
+		UserID: 983
+	Total Family Income: 364000.000000
+	Total Monthly Expense:
+		Month 1: 1500.000000
+		Month 2: 2000.000000
+		Month 3: 0.000000
+		Month 4: 4800.000000
+		Month 5: 4900.000000
+		Month 6: 0.000000
+		Month 7: 0.000000
+		Month 8: 0.000000
+		Month 9: 7750.000000
+		Month 10: 0.000000
+		Month 11: 0.000000
+		Month 12: 0.000000
+Family at position 3:
+	FamilyID: 604
+	Family Name: Nikhil's family
+	Members:
+		UserID: 315
+		UserID: 511
+		UserID: 589
+		UserID: 419
+	Total Family Income: 378000.000000
+	Total Monthly Expense:
+		Month 1: 0.000000
+		Month 2: 0.000000
+		Month 3: 0.000000
+		Month 4: 0.000000
+		Month 5: 0.000000
+		Month 6: 0.000000
+		Month 7: 0.000000
+		Month 8: 0.000000
+		Month 9: 12850.000000
+		Month 10: 1200.000000
+		Month 11: 2400.000000
+		Month 12: 0.000000
+Family at position 4:
+	FamilyID: 721
+	Family Name: Sanjay's family
+	Members:
+		UserID: 918
+		UserID: 671
+		UserID: 867
+		UserID: 632
+	Total Family Income: 415000.000000
+	Total Monthly Expense:
+		Month 1: 0.000000
+		Month 2: 0.000000
+		Month 3: 0.000000
+		Month 4: 0.000000
+		Month 5: 0.000000
+		Month 6: 1250.000000
+		Month 7: 8000.000000
+		Month 8: 0.000000
+		Month 9: 9450.000000
+		Month 10: 0.000000
+		Month 11: 0.000000
+		Month 12: 0.000000
+Family at position 5:
+	FamilyID: 821
+	Family Name: Amit's family
+	Members:
+		UserID: 127
+		UserID: 432
+		UserID: 155
+		UserID: 0
+	Total Family Income: 263000.000000
+	Total Monthly Expense:
+		Month 1: 0.000000
+		Month 2: 0.000000
+		Month 3: 3400.000000
+		Month 4: 0.000000
+		Month 5: 0.000000
+		Month 6: 0.000000
+		Month 7: 0.000000
+		Month 8: 0.000000
+		Month 9: 6950.000000
+		Month 10: 900.000000
+		Month 11: 0.000000
+		Month 12: 0.000000
+Family at position 6:
+	FamilyID: 822
+	Family Name: Varun's family
+	Members:
+		UserID: 286
+		UserID: 0
+		UserID: 0
+		UserID: 0
+	Total Family Income: 89000.000000
+	Total Monthly Expense:
+		Month 1: 0.000000
+		Month 2: 0.000000
+		Month 3: 0.000000
+		Month 4: 0.000000
+		Month 5: 1800.000000
+		Month 6: 0.000000
+		Month 7: 0.000000
+		Month 8: 0.000000
+		Month 9: 0.000000
+		Month 10: 0.000000
+		Month 11: 0.000000
+		Month 12: 0.000000
+Family at position 7:
+	FamilyID: 823
+	Family Name: Neha's family
+	Members:
+		UserID: 903
+		UserID: 0
+		UserID: 0
+		UserID: 0
+	Total Family Income: 105000.000000
+	Total Monthly Expense:
+		Month 1: 0.000000
+		Month 2: 850.000000
+		Month 3: 0.000000
+		Month 4: 0.000000
+		Month 5: 0.000000
+		Month 6: 0.000000
+		Month 7: 0.000000
+		Month 8: 0.000000
+		Month 9: 0.000000
+		Month 10: 0.000000
+		Month 11: 0.000000
+		Month 12: 0.000000

@@ -21,22 +21,29 @@ int main() {
     sc = ReadUserData(); PrintStatus("ReadUserData()", sc);
     sc = ReadExpenseData(); PrintStatus("ReadExpenseData()", sc);
 
-    printf("Printing User List:\n"); PrintUserList();
-    printf("Printing Expense List:\n"); PrintExpenseList();
-    printf("Printing Family List:\n"); PrintFamilyList();
+    // Storing Initial Data int Output file
     FPrintAllLists();
     
     /* Testing Some Insert, Delete, Updation operations */
     Expense NewExpense;
     NewExpense = MakeExpense(100, 127, "Rent", 1300, "10/11/2024");
     AddExpense(NewExpense);
-    printf("Printing Expense List:\n"); PrintExpenseList();
-    printf("Printing Family List:\n"); PrintFamilyList();
 
     // Delete operation
     sc = DeleteUser(286); PrintStatus("DeleteUser(286)", sc);
     sc = DeleteUser(867); PrintStatus("DeleteUser(632)", sc);
     sc = DeleteUser(671); PrintStatus("DeleteUser(671)", sc);
+
+    // Delete Family 
+    sc = DeleteFamily(409); PrintStatus("DeleteFamily(409)", sc);
+    sc = DeleteFamily(400); PrintStatus("DeleteFamily(400)", sc);
+    // Delete Expense 
+    sc = DeleteExpense(142); PrintStatus("DeleteExpense(142)", sc);
+    sc = DeleteExpense(143); PrintStatus("DeleteExpense(143)", sc);
+
+    // Getters
+    GetCategoricalExpense("Leisure", 604);
+    GetHighestExpenseDay(821);
     PrintAllLists();
 
     return 0;

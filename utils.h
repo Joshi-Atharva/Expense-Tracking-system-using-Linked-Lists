@@ -90,6 +90,8 @@ extern ExpenseNode* eptr;
     UserNode* FindUserForDeletion(int UserID, UserNode** uprevpptr);
     ExpenseNode* ExpenseOfUser(int UserID);
     ExpenseNode* ExpenseOfUserForDeletion(int UserID, ExpenseNode** eprevpptr);
+    ExpenseNode* FindExpenseForDeletion(int ExpenseID, ExpenseNode** eprevpptr);
+    FamilyNode* FindFamily(int FamilyID);
 
     // ----core functionalities----
         // Creation
@@ -112,5 +114,12 @@ extern ExpenseNode* eptr;
         status_code DeleteExpenseNode(ExpenseNode** epptr, ExpenseNode** eprevpptr);
         status_code DeleteFamilyNode(FamilyNode* fptr, FamilyNode** fprevpptr);
         status_code DeleteUser(int UserID);
-
+        status_code DeleteFamily(int FamilyID);
+        status_code DeleteExpense(int ExpenseID);
+    
+    // Getters
+    float GetTotalExpense(int FamilyID);
+    void GetCategoricalExpense(const char* category, int FamilyID);
+    void GetHighestExpenseDay(int FamilyID);
+    
 #endif
